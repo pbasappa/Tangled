@@ -32,6 +32,21 @@ extern struct AndList *final;
 extern struct FuncOperator *finalfunc;
 extern FILE *yyin;
 
+void get_sort_order(char *input, Schema *l, OrderMaker &sortorder) {
+    init_lexical_parser(input);
+    if (yyparse() != 0) {
+        cout << " Error: can't parse your CNF \n";
+        exit(1);
+    }
+    Record literal;
+    CNF sort_pred;
+    sort_pred.GrowFromParseTree(final, l, literal); // constructs CNF predicate
+    OrderMaker dummy;
+    sort_pred.GetSortOrders(sortorder, dummy);
+}
+
+
+
 typedef struct {
 	Pipe *pipe;
 	OrderMaker *order;

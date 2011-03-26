@@ -16,7 +16,6 @@ struct WriteOutThreadParameter{
 	Schema *mySchema;
 	FILE  *outFile;
 };
-
 struct DuplicateRemovalThreadParameter
 {
 Pipe *inputPipe;
@@ -161,10 +160,11 @@ class Join : public RelationalOp {
 
 	public:
 	Join();
-	void Run (Pipe &inPipeL, Pipe &inPipeR, Pipe &outPipe, CNF &selOp, Record &literal,Schema *lschema,Schema *rschema);
+	void Run (Pipe &inPipeL, Pipe &inPipeR, Pipe &outPipe, CNF &selOp, Record &literal);
 	void WaitUntilDone ();
 	void Use_n_Pages (int n);
 };
+
 
 class DuplicateRemoval : public RelationalOp {
 private:
@@ -178,6 +178,7 @@ private:
 	void Use_n_Pages (int n) ;
 };
 
+
 class WriteOut : public RelationalOp {
 private:
 	pthread_t thread;
@@ -186,6 +187,7 @@ private:
 	void WaitUntilDone () ;
 	void Use_n_Pages (int n);
 };
+
 
 class GroupBy : public RelationalOp {
 private:

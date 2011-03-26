@@ -467,15 +467,6 @@ void Record :: Print (Schema *mySchema) {
 	cout << "\n";
 }
 
-int Record:: getAttNum()
-{
-	int firstAttOffset = ((int *) bits)[1];
-	int numOfAtts = firstAttOffset / sizeof(int) - 1;
-	//cout<<"Number of Atts : "<<numOfAtts;
-	return numOfAtts;
-	
-}
-
 void Record::Print(FILE *outFile,Schema *mySchema){
 
 	int n = mySchema->GetNumAtts();
@@ -533,3 +524,13 @@ void Record::Print(FILE *outFile,Schema *mySchema){
 		fprintf(outFile,"%s","\n");
 
 }
+int Record:: getAttNum()
+{
+	int firstAttOffset = ((int *) bits)[1];
+	int numOfAtts = firstAttOffset / sizeof(int) - 1;
+	//cout<<"Number of Atts : "<<numOfAtts;
+	return numOfAtts;
+	
+}
+
+

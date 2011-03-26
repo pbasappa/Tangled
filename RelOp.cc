@@ -469,7 +469,7 @@ void* JoinRun(void *parameter)
 }
 	
 
-void Join::Run (Pipe &inPipeL, Pipe &inPipeR, Pipe &outPipe, CNF &selOp, Record &literal,Schema *lschema,Schema *rschema)
+void Join::Run (Pipe &inPipeL, Pipe &inPipeR, Pipe &outPipe, CNF &selOp, Record &literal)
 {
 	JoinThreadParameter *pt = new JoinThreadParameter;
 	pt->leftPipe = &inPipeL;
@@ -478,8 +478,7 @@ void Join::Run (Pipe &inPipeL, Pipe &inPipeR, Pipe &outPipe, CNF &selOp, Record 
 	pt->cnfExpression = &selOp;
 	pt->litRecord = &literal;
 	pt->pageUsed = pageUsed;
-	pt->lschema = lschema;
-	pt->rschema = rschema;
+
 	if(pthread_create(&thread, NULL,&JoinRun, (void *)pt))
 	{
 		//Exception for Pthread: exit in case of error	
@@ -503,10 +502,9 @@ Join::Join()
 {
 	pageUsed = 8;
 }
-
-// DUPLICATE REMOVAL
+//Duplicate Removal
 void* DuplicateRemovalRun(void *parameter)
-{
+		{
 	struct DuplicateRemovalThreadParameter *param = (struct DuplicateRemovalThreadParameter *) parameter;
 	Pipe *inputPipe = param->inputPipe;
 	Pipe *outputPipe = param->outputPipe;
@@ -599,7 +597,15 @@ void* DuplicateRemovalRun(void *parameter)
 	//cout<<"Count1 = "<<count1<<endl;
 	cout<<"Out of Duplicate Removal"<<endl;
 	outputPipe->ShutDown();
+
+		}
+
+DuplicateRemoval:: DuplicateRemoval()
+{
+runLength = 8;
 }
+
+
 
 void DuplicateRemoval:: Run (Pipe &inPipe, Pipe &outPipe, Schema &mySchema)
 {
@@ -611,7 +617,7 @@ void DuplicateRemoval:: Run (Pipe &inPipe, Pipe &outPipe, Schema &mySchema)
 	if(pthread_create(&thread, NULL,&DuplicateRemovalRun, (void *)param))
 	{
 		//Exception for Pthread: exit in case of error
-		cout<<"\nError: Duplicate Remove Thread couldn't be created\n";
+		cout<<"\nError: Thread couldn't be created\n";
 		exit(-1);
 	}
 }
@@ -621,20 +627,15 @@ void DuplicateRemoval::WaitUntilDone ()
 	cout<<"Control inside Wait Untill of Project :"<<endl;
 	pthread_join (thread, NULL);
 }
-
 void DuplicateRemoval::Use_n_Pages (int n)
 {
 	runLength = n;
 }
 
-DuplicateRemoval:: DuplicateRemoval()
-{
-runLength = 8;
-}
 
 
 
-// WRITE OUT
+//writeout
 void* woRun(void *parameter){
 	cout<<"Entered writeout thread function"<<endl;
 	struct WriteOutThreadParameter *param = (struct WriteOutThreadParameter *) parameter;
@@ -659,7 +660,6 @@ void* woRun(void *parameter){
 	fclose(outFile);
 	cout<<"Exiting writeout thread function"<<endl;
 }
-
 void WriteOut::Run (Pipe &inPipe, FILE *outFile, Schema &mySchema){
 	cout<<"Entered Writeout run method"<<endl;
 	WriteOutThreadParameter *param = new WriteOutThreadParameter;
@@ -670,11 +670,10 @@ void WriteOut::Run (Pipe &inPipe, FILE *outFile, Schema &mySchema){
 	if(pthread_create(&thread, NULL,&woRun, (void *)param))
 	{
 		//Exception for Pthread: exit in case of error
-		cout<<"\nError: Write Out Thread couldn't be created\n";
+		cout<<"\nError: Thread couldn't be created\n";
 		exit(-1);
 	}
 }
-
 void WriteOut::Use_n_Pages(int n){
 
 }
@@ -682,6 +681,8 @@ void WriteOut::WaitUntilDone ()
 {
 	pthread_join (thread, NULL);
 }
+
+
 
 // GROUP BY
 GroupBy::GroupBy()
@@ -740,8 +741,8 @@ void* GroupByRun(void *parameter)
 			count = 1;
 			fetched2.Copy(&fetched);
 			//call sum on the intermediate pipe 2 for the set of sorted records
-			Sum *sumObject = new Sum();
-			sumObject->Run(*intermediatePipe2, *outputPipe, *computeMe);
+//			Sum *sumObject = new Sum();
+//			sumObject->Run(*intermediatePipe2, *outputPipe, *computeMe);
 		}
 	}
 }
@@ -770,3 +771,4 @@ void GroupBy::WaitUntilDone ()
     cout<<"Control inside Wait Untill of Project :"<<endl;
     pthread_join (thread, NULL);
 }
+

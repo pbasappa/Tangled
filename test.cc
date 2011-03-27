@@ -16,7 +16,7 @@ int clear_pipe (Pipe &in_pipe, Schema *schema, bool print) {
 		}
 		cnt++;
 	}
-	cout<<"count = "<<cnt<<endl;
+	//cout<<"count = "<<cnt<<endl;
 	return cnt;
 }
 
@@ -245,13 +245,9 @@ void q5 () {
 		FILE *writefile = fopen (fwpath, "w");
 
 	SF_ps.Run (dbf_ps, _ps, cnf_ps, lit_ps);
-	cout<<"SF Run complete"<<endl;
 	P_ps.Run (_ps, __ps, keepMe, numAttsIn, numAttsOut);
-	cout<<"Project Run complete"<<endl;
 	D.Run (__ps, ___ps,__ps_sch);
-	cout<<"Duplicate Run complete"<<endl;
 	W.Run (___ps, writefile, __ps_sch);
-	cout<<"WriteOut Run complete"<<endl;
 
 	SF_ps.WaitUntilDone ();
 	P_ps.WaitUntilDone ();
@@ -295,20 +291,29 @@ void q6 () {
 			char *str_sum = "(ps_supplycost)";
 			get_cnf (str_sum, &join_sch, func);
 			func.Print ();
-			OrderMaker grp_order (&join_sch);
-	//G.Use_n_Pages (1);
+			//OrderMaker grp_order (&join_sch);
+
+			            /*********************************/
+			            //JOEL'S CODE
+			            OrderMaker grp_order;
+			            get_sort_order("(s_nationkey)", &join_sch, grp_order);
+			            /*********************************/
+
+
+	G.Use_n_Pages (1);
 
 	SF_ps.Run (dbf_ps, _ps, cnf_ps, lit_ps); // 161 recs qualified
 	J.Run (_s, _ps, _s_ps, cnf_p_ps, lit_p_ps);
-//	G.Run (_s_ps, _out, grp_order, func);
+	G.Run (_s_ps, _out, grp_order, func, *s->schema());
 
 	SF_ps.WaitUntilDone ();
 	J.WaitUntilDone ();
-	//G.WaitUntilDone ();
+
 
 	Schema sum_sch ("sum_sch", 1, &DA);
 	int cnt = clear_pipe (_out, &sum_sch, true);
-	cout << " query6 returned sum for " << cnt << " groups (expected 25 groups)\n"; 
+	G.WaitUntilDone ();
+	cout << " query6 returned sum for " << cnt << " groups (expected 25 groups)\n";
 }
 
 void q7 () { 

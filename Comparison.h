@@ -69,6 +69,12 @@ public:
 	void addType(int index, Type type);
 	
 	void setNumAtts(int num);
+
+	int getNumAtts();
+
+	int* getAtts();
+
+	enum Type* getAttType();
 	// Reconstruct sortorder
 	//void Build (OrderMaker *sortOrder, int attNum);
 

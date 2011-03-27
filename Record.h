@@ -68,8 +68,12 @@ public:
 	// prints the contents of the record; this requires
 	// that the schema also be given so that the record can be interpreted
 	void Print (Schema *mySchema);
+
 	void Print(FILE *outFile,Schema *mySchema);
-        int getAttNum();
+
+	char* GetValue(Schema *mySchema, int colNum);
+
+    int getAttNum();
 };
 
 #endif

@@ -31,6 +31,8 @@ struct GroupByThreadParameter
     OrderMaker *groupAtts;
     Function *computeMe;
 	int runLength;
+
+	Schema *schema;
 };
 
 
@@ -195,7 +197,7 @@ private:
     int runLength;
     public:
     GroupBy();
-    void Run (Pipe &inPipe, Pipe &outPipe, OrderMaker &groupAtts, Function &computeMe);
+    void Run (Pipe &inPipe, Pipe &outPipe, OrderMaker &groupAtts, Function &computeMe, Schema &schema);
     void WaitUntilDone ();
     void Use_n_Pages (int n);
 };

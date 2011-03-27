@@ -79,6 +79,7 @@ void performMerge(struct ThreadParameter *param,off_t *startOffsets,off_t *endOf
 	Pipe *outputPipe = param->outputPipe;
 	int i,retRun;
 	struct QEntry *entry,*minEntry;
+	int count = 0;
 	//mark1 = param->sortOrder;
 	int pagesRead = 0;
 	
@@ -110,6 +111,7 @@ void performMerge(struct ThreadParameter *param,off_t *startOffsets,off_t *endOf
 		
 		retRun = minEntry->getRunNumber();
 		outputPipe->Insert(minEntry->getRecord());
+		count++;
 		entry = new QEntry;
 		
 		int success = loadEntry(&pages[retRun],entry,retRun,param->sortOrder);
@@ -144,6 +146,7 @@ void performMerge(struct ThreadParameter *param,off_t *startOffsets,off_t *endOf
 	}
 	file.Close();
 	remove(tempFileName);
+	cout<<"Entered : "<<count<<endl;
 	//cout<<"Value of PrintCounter : "<<printCounter<<endl;
 }
 
@@ -156,9 +159,9 @@ void* performSort(void *parameter)
 	int appendResult = -1;
 	int runLength = param->runLength;
 	int i;
-	off_t *startOffsets = new off_t[2000];
-	off_t *endOffsets = new off_t[2000];
-	int *pagesCount = new int[2000];
+	off_t *startOffsets = new off_t[3000];
+	off_t *endOffsets = new off_t[3000];
+	int *pagesCount = new int[3000];
 	int offsetCounter = 0;
 	Pipe *in = param->inputPipe; 
 	Record removeMe;

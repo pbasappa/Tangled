@@ -524,13 +524,50 @@ void Record::Print(FILE *outFile,Schema *mySchema){
 		fprintf(outFile,"%s","\n");
 
 }
+
+char* Record::GetValue(Schema *mySchema, int i /*i = column number */)
+{
+	int n = mySchema->GetNumAtts();
+	Attribute *atts = mySchema->GetAtts();
+
+	//Setting the value of the new attValue array to 100!!!! NOTE
+	char *attValue = new char[100];
+
+	// use the i^th slot at the head of the record to get the
+	// offset to the correct attribute in the record
+	int pointer = ((int *) bits)[i + 1];
+
+	// first is integer
+	if (atts[i].myType == Int) {
+		int *myInt = (int *) &(bits[pointer]);
+		//outFile << *myInt;
+		sprintf(attValue,"%d",*myInt);
+		// then is a double
+	} else if (atts[i].myType == Double) {
+		double *myDouble = (double *) &(bits[pointer]);
+		//outFile<< *myDouble;
+		sprintf(attValue,"%f",*myDouble);
+		// then is a character string
+	} else if (atts[i].myType == String) {
+		char *myString = (char *) &(bits[pointer]);
+		//outFile<< myString;
+		sprintf(attValue,"%s",myString);
+	}
+	else {
+		cout<<"Record.cc::GetValue:  No Match found for the offset"<<endl;
+	}
+	int strLen2 = strlen(attValue);
+	attValue[strLen2 + 1] = '\0';
+
+	return attValue;
+}
+
 int Record:: getAttNum()
 {
 	int firstAttOffset = ((int *) bits)[1];
 	int numOfAtts = firstAttOffset / sizeof(int) - 1;
 	//cout<<"Number of Atts : "<<numOfAtts;
 	return numOfAtts;
-	
 }
 
 

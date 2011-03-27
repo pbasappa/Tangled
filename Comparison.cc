@@ -161,13 +161,21 @@ void OrderMaker :: Write (char *metadata, int l)
 	
 	writer.close();
 }
-/*
-void Build (OrderMaker *sortOrder, int numAtts)
-{
-	
 
+int OrderMaker::getNumAtts()
+{
+	return numAtts;
 }
-*/
+
+int* OrderMaker::getAtts()
+{
+	return whichAtts;
+}
+
+enum Type* OrderMaker::getAttType()
+{
+	return whichTypes;
+}
 
 
 int CNF :: GetSortOrders (OrderMaker &left, OrderMaker &right) {
